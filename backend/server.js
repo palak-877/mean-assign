@@ -11,6 +11,11 @@ const app = express();
 app.use(express.json()); // parses incoming JSON data
 app.use(cors()); // enables cross-origin requests
 
+// Connect to MongoDB
+mongoose.connect(process.env.MONGO_URI)
+.then(() => console.log("MongoDB Connected"))
+.catch(err => console.log(err));
+
 // Test route
 app.get("/", (req, res) => {
   res.send("Server is running");
