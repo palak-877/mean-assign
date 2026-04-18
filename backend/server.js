@@ -36,6 +36,27 @@ app.post("/signup", async (req, res) => {
 
   res.send("User registered successfully");
 });
+
+const jwt = require("jsonwebtoken");
+
+// Login route
+app.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+
+  const user = await User.findOne({ email });
+
+  if (!user) return res.send("User not found");
+
+  // Compare passwords
+  const isMatch = await bcrypt.compare(password, user.password);
+
+  if (!isMatch) return res.send("Invalid credentials");
+
+  // Generate token
+  const token = jwt.sign({ id: user._id }, "secretkey");
+
+  res.json({ token });
+});
 // Test route
 app.get("/", (req, res) => {
   res.send("Server is running");
