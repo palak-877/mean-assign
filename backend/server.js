@@ -16,6 +16,26 @@ mongoose.connect(process.env.MONGO_URI)
 .then(() => console.log("MongoDB Connected"))
 .catch(err => console.log(err));
 
+const User = require("./models/User");
+const bcrypt = require("bcrypt");
+
+// Signup route
+app.post("/signup", async (req, res) => {
+  const { name, email, password } = req.body;
+
+  // Hash password before saving
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  const user = new User({
+    name,
+    email,
+    password: hashedPassword
+  });
+
+  await user.save();
+
+  res.send("User registered successfully");
+});
 // Test route
 app.get("/", (req, res) => {
   res.send("Server is running");
